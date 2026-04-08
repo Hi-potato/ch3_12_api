@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student 資料</title>
+    <style>
+        :root{
+            --black: #161616;
+            --ivory: #f3efe6;
+            --slate-blue: #7b8da1;
+            --terracotta: #b85c38;
+            --indigo: #2f3e63;
+            --mustard: #c7a52b;
+            --line: rgba(22, 22, 22, 0.18);
+            --card-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body{
+            font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+            background: var(--ivory);
+            color: var(--black);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 幾何背景 */
+        .bg-art{
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .shape{
+            position: absolute;
+            opacity: 0.92;
+            animation: drift 18s ease-in-out infinite alternate;
+        }
+
+        .shape.s1{
+            width: 340px;
+            height: 340px;
+            background: var(--terracotta);
+            top: -80px;
+            left: -70px;
+            border-radius: 0 0 55% 0;
+            animation-duration: 22s;
+        }
+
+        .shape.s2{
+            width: 240px;
+            height: 240px;
+            border: 3px solid var(--indigo);
+            top: 10%;
+            right: 8%;
+            transform: rotate(18deg);
+            animation-duration: 26s;
+        }
+
+        .shape.s3{
+            width: 180px;
+            height: 180px;
+            background: var(--mustard);
+            border-radius: 50%;
+            left: 8%;
+            bottom: 12%;
+            animation-duration: 20s;
+        }
+
+        .shape.s4{
+            width: 300px;
+            height: 140px;
+            background: var(--slate-blue);
+            right: -50px;
+            bottom: 10%;
+            transform: rotate(-12deg);
+            animation-duration: 24s;
+        }
+
+        .shape.s5{
+            width: 420px;
+            height: 2px;
+            background: var(--black);
+            left: 50%;
+            top: 18%;
+            transform: translateX(-50%) rotate(-8deg);
+            opacity: 0.22;
+            animation-duration: 28s;
+        }
+
+        .shape.s6{
+            width: 160px;
+            height: 160px;
+            border: 2px solid var(--terracotta);
+            background: transparent;
+            left: 26%;
+            bottom: 18%;
+            transform: rotate(45deg);
+            opacity: 0.35;
+            animation-duration: 30s;
+        }
+
+        @keyframes drift{
+            from{
+                transform: translate(0, 0) rotate(0deg);
+            }
+            to{
+                transform: translate(10px, -12px) rotate(3deg);
+            }
+        }
+
+        .container{
+            position: relative;
+            z-index: 1;
+            width: min(1100px, calc(100% - 48px));
+            margin: 0 auto;
+            padding: 56px 0 72px;
+        }
+
+        .hero{
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 28px;
+            align-items: end;
+            margin-bottom: 42px;
+        }
+
+        .hero-left{
+            padding: 8px 0;
+        }
+
+        .tag{
+            display: inline-block;
+            padding: 8px 14px;
+            border: 1.5px solid var(--black);
+            background: rgba(255,255,255,0.35);
+            font-size: 13px;
+            letter-spacing: 0.18em;
+            margin-bottom: 18px;
+        }
+
+        .hero h1{
+            font-size: clamp(2.1rem, 5vw, 4.2rem);
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: 0.04em;
+            margin-bottom: 14px;
+        }
+
+        .hero p{
+            max-width: 580px;
+            color: rgba(22,22,22,0.72);
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .poster-block{
+            min-height: 220px;
+            border: 2px solid var(--black);
+            background:
+                linear-gradient(0deg, transparent 0 100%),
+                var(--ivory);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .poster-block::before{
+            content: "";
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            background: var(--indigo);
+            top: 18px;
+            right: 22px;
+        }
+
+        .poster-block::after{
+            content: "";
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: var(--mustard);
+            left: -35px;
+            bottom: -35px;
+        }
+
+        .poster-line{
+            position: absolute;
+            width: 180px;
+            height: 2px;
+            background: var(--black);
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) rotate(-28deg);
+        }
+
+        .error-box{
+            margin-bottom: 28px;
+            padding: 18px 22px;
+            border-left: 8px solid var(--terracotta);
+            background: rgba(184, 92, 56, 0.08);
+            border-top: 1px solid rgba(22,22,22,0.08);
+            border-right: 1px solid rgba(22,22,22,0.08);
+            border-bottom: 1px solid rgba(22,22,22,0.08);
+        }
+
+        .error-box h2{
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: var(--terracotta);
+        }
+
+        .error-box p{
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .student-grid{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .student-card{
+            background: rgba(255,255,255,0.58);
+            backdrop-filter: blur(3px);
+            border: 2px solid var(--black);
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .student-card::before{
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 18px;
+            height: 100%;
+            background: var(--indigo);
+        }
+
+        .student-card::after{
+            content: "";
+            position: absolute;
+            right: 18px;
+            top: 16px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(199, 165, 43, 0.22);
+        }
+
+        .card-header{
+            padding: 24px 28px 14px 36px;
+            border-bottom: 1px solid var(--line);
+            position: relative;
+        }
+
+        .card-header h3{
+            font-size: 1.15rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .card-header span{
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 13px;
+            color: rgba(22,22,22,0.58);
+            letter-spacing: 0.12em;
+        }
+
+        .card-body{
+            padding: 18px 28px 26px 36px;
+        }
+
+        .info-row{
+            display: grid;
+            grid-template-columns: 72px 1fr;
+            gap: 14px;
+            padding: 11px 0;
+            border-bottom: 1px solid rgba(22, 22, 22, 0.08);
+        }
+
+        .info-row:last-child{
+            border-bottom: none;
+        }
+
+        .label{
+            font-weight: 800;
+            color: var(--indigo);
+            letter-spacing: 0.08em;
+        }
+
+        .value{
+            line-height: 1.75;
+            word-break: break-word;
+            color: rgba(22,22,22,0.9);
+        }
+
+        .empty-state{
+            padding: 40px 32px;
+            border: 2px dashed rgba(22,22,22,0.28);
+            background: rgba(255,255,255,0.35);
+            text-align: center;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 860px){
+            .hero{
+                grid-template-columns: 1fr;
+            }
+
+            .poster-block{
+                min-height: 160px;
+            }
+        }
+
+        @media (max-width: 520px){
+            .container{
+                width: min(100% - 24px, 1100px);
+                padding-top: 28px;
+            }
+
+            .student-grid{
+                grid-template-columns: 1fr;
+            }
+
+            .card-header,
+            .card-body{
+                padding-left: 24px;
+                padding-right: 20px;
+            }
+
+            .info-row{
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-art">
+        <div class="shape s1"></div>
+        <div class="shape s2"></div>
+        <div class="shape s3"></div>
+        <div class="shape s4"></div>
+        <div class="shape s5"></div>
+        <div class="shape s6"></div>
+    </div>
+
+    <div class="container">
+        <section class="hero">
+            <div class="hero-left">
+                <div class="tag">STUDENT ARCHIVE</div>
+                <h1>學生資料</h1>
+                <p>
+                    以簡約幾何構成呈現資料內容，保留清楚可讀性，
+                    同時讓畫面更像藝術海報與現代拼貼。
+                </p>
+            </div>
+
+            <div class="poster-block">
+                <div class="poster-line"></div>
+            </div>
+        </section>
+
+        {% if errormessage %}
+        <section class="error-box">
+            <h2>系統訊息</h2>
+            <p>{{ errormessage }}</p>
+        </section>
+        {% endif %}
+
+        {% if resultList %}
+        <section class="student-grid">
+            {% for data in resultList %}
+            <article class="student-card">
+                <div class="card-header">
+                    <h3>{{ data.cname }}</h3>
+                    <span>Student Profile</span>
+                </div>
+
+                <div class="card-body">
+                    <div class="info-row">
+                        <div class="label">學號</div>
+                        <div class="value">{{ data.cid }}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="label">性別</div>
+                        <div class="value">{{ data.csex }}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="label">生日</div>
+                        <div class="value">{{ data.cbirthday }}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="label">信箱</div>
+                        <div class="value">{{ data.cemail }}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="label">電話</div>
+                        <div class="value">{{ data.cphone }}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="label">地址</div>
+                        <div class="value">{{ data.caddr }}</div>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </section>
+        {% else %}
+        <section class="empty-state">
+            目前沒有可顯示的學生資料。
+        </section>
+        {% endif %}
+    </div>
+</body>
+</html>
+
+{% comment %} 幾個重點都收進去了：
+
+配色改成黑、米白、灰藍、陶土紅、靛藍、芥黃
+不用花俏漸層，改成大色塊與線條幾何
+動畫只留背景圖形的超輕微漂移
+資料內容改成比較像設計海報上的資訊卡 {% endcomment %}

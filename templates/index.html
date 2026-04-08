@@ -1,0 +1,472 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>學生資料管理系統</title>
+<style>
+    *{
+        box-sizing: border-box;
+    }
+
+    body{
+        margin: 0;
+        font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+        background: #f3efe7;
+        color: #1e1e1e;
+    }
+
+    /* 幾何背景 */
+    .art-bg{
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .shape{
+        position: absolute;
+        opacity: 0.95;
+        animation: drift 14s ease-in-out infinite;
+    }
+
+    .shape.circle-a{
+        width: 240px;
+        height: 240px;
+        border-radius: 50%;
+        background: #c65a3a;
+        top: 8%;
+        left: -60px;
+    }
+
+    .shape.circle-b{
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: #d2a93a;
+        bottom: 10%;
+        right: 4%;
+        animation-delay: 2s;
+    }
+
+    .shape.block-a{
+        width: 220px;
+        height: 220px;
+        background: #2f4869;
+        top: 18%;
+        right: 10%;
+        transform: rotate(12deg);
+        animation-delay: 1s;
+    }
+
+    .shape.block-b{
+        width: 160px;
+        height: 160px;
+        background: #d9d2c3;
+        bottom: 14%;
+        left: 8%;
+        transform: rotate(-10deg);
+        animation-delay: 3s;
+    }
+
+    .shape.line-a{
+        width: 360px;
+        height: 2px;
+        background: #111;
+        top: 22%;
+        left: 20%;
+        transform: rotate(-18deg);
+        animation-delay: 2.5s;
+    }
+
+    .shape.line-b{
+        width: 260px;
+        height: 2px;
+        background: #111;
+        bottom: 18%;
+        right: 18%;
+        transform: rotate(24deg);
+        animation-delay: 1.2s;
+    }
+
+    .shape.arc{
+        width: 220px;
+        height: 220px;
+        border: 10px solid #111;
+        border-color: #111 transparent transparent transparent;
+        border-radius: 50%;
+        top: 55%;
+        left: 42%;
+        animation-delay: 4s;
+    }
+
+    @keyframes drift{
+        0%,100%{
+            transform: translate(0,0) rotate(0deg);
+        }
+        50%{
+            transform: translate(10px,-12px) rotate(2deg);
+        }
+    }
+
+    .page-wrap{
+        width: min(1180px, 92%);
+        margin: 34px auto 40px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .head_content{
+        position: relative;
+        margin-bottom: 28px;
+        padding: 34px 28px;
+        background: rgba(255,255,255,0.72);
+        border: 3px solid #111;
+        box-shadow: 10px 10px 0 #111;
+    }
+
+    h1,h2{
+        text-align: center;
+        margin: 0;
+    }
+
+    .title{
+        font-size: clamp(2rem, 4vw, 3.4rem);
+        font-weight: 900;
+        letter-spacing: 4px;
+        color: #111;
+        margin-bottom: 14px;
+    }
+
+    .subtitle{
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #333;
+    }
+
+    .subtitle a{
+        display: inline-block;
+        margin-left: 10px;
+        padding: 10px 18px;
+        text-decoration: none;
+        color: #fff;
+        background: #2f4869;
+        border: 2px solid #111;
+        transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .subtitle a:hover{
+        transform: translate(-2px,-2px);
+        background: #c65a3a;
+    }
+
+    .search-box{
+        margin-top: 24px;
+        text-align: center;
+    }
+
+    .search-panel{
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 14px 16px;
+        background: #fffaf2;
+        border: 2px solid #111;
+    }
+
+    .search-panel label{
+        font-weight: 800;
+        color: #111;
+    }
+
+    .search-panel input[type="search"]{
+        width: min(320px, 72vw);
+        padding: 12px 14px;
+        border: 2px solid #111;
+        outline: none;
+        font-size: 1rem;
+        background: #fff;
+    }
+
+    .search-panel input[type="search"]:focus{
+        background: #f5f1e8;
+    }
+
+    .search-panel button{
+        border: 2px solid #111;
+        padding: 12px 20px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 800;
+        color: #111;
+        background: #d2a93a;
+        transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .search-panel button:hover{
+        transform: translate(-2px,-2px);
+        background: #c65a3a;
+        color: #fff;
+    }
+
+    .table-wrap{
+        overflow-x: auto;
+        padding: 16px;
+        background: rgba(255,255,255,0.78);
+        border: 3px solid #111;
+        box-shadow: 10px 10px 0 #111;
+    }
+
+    table{
+        width: 100%;
+        min-width: 980px;
+        border-collapse: collapse;
+        background: #fffdf8;
+    }
+
+    th, td{
+        border: 2px solid #111;
+        padding: 14px 12px;
+        text-align: center;
+    }
+
+    th{
+        background: #2f4869;
+        color: #fff;
+        font-size: 1rem;
+        letter-spacing: 1px;
+    }
+
+    td{
+        background: #fffdf8;
+        color: #222;
+        transition: background 0.2s ease;
+    }
+
+    tr:nth-child(even) td{
+        background: #f6f0e5;
+    }
+
+    tr:hover td{
+        background: #ece4d3;
+    }
+
+    td a{
+        display: inline-block;
+        margin: 2px 4px;
+        padding: 8px 14px;
+        text-decoration: none;
+        font-weight: 800;
+        border: 2px solid #111;
+        transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+    }
+
+    td a:first-child{
+        background: #d2a93a;
+        color: #111;
+    }
+
+    td a:last-child{
+        background: #c65a3a;
+        color: #fff;
+    }
+
+    td a:hover{
+        transform: translate(-2px,-2px);
+    }
+
+    .pagination{
+        margin-top: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 16px;
+        background: rgba(255,255,255,0.78);
+        border: 3px solid #111;
+        box-shadow: 10px 10px 0 #111;
+    }
+
+    .pagination a,
+    .pagination span,
+    .pagination strong{
+        min-width: 44px;
+        padding: 10px 14px;
+        text-align: center;
+        text-decoration: none;
+        font-weight: 800;
+        border: 2px solid #111;
+    }
+
+    .pagination a{
+        background: #fff;
+        color: #111;
+        transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .pagination a:hover{
+        transform: translate(-2px,-2px);
+        background: #d9d2c3;
+    }
+
+    .pagination strong{
+        background: #111;
+        color: #fff;
+    }
+
+    .pagination span{
+        background: #ebe4d7;
+        color: #666;
+    }
+
+    .error-box{
+        text-align: center;
+        padding: 40px 20px;
+        background: rgba(255,255,255,0.78);
+        border: 3px solid #111;
+        box-shadow: 10px 10px 0 #111;
+        color: #c65a3a;
+        font-size: 1.8rem;
+        font-weight: 900;
+    }
+
+    @media (max-width: 768px){
+        .head_content{
+            padding: 24px 16px;
+        }
+
+        .subtitle{
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .search-panel{
+            width: 100%;
+        }
+
+        .search-panel input[type="search"]{
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="art-bg">
+    <span class="shape circle-a"></span>
+    <span class="shape circle-b"></span>
+    <span class="shape block-a"></span>
+    <span class="shape block-b"></span>
+    <span class="shape line-a"></span>
+    <span class="shape line-b"></span>
+    <span class="shape arc"></span>
+</div>
+
+<div class="page-wrap">
+    <div class="head_content">
+        <h1 class="title">學生資料管理系統...</h1>
+        <h2 class="subtitle">目前資料筆數:{{ data_count }} , <a href="/post/">新增學生資料</a></h2>
+
+        <div class="search-box">
+            <form action="{% url 'index' %}" method="get" class="search-panel">
+                <label for="site_search">搜尋關鍵字</label>
+                <input type="search" id="site_search" name="site_search">
+                <button type="submit">搜尋</button>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        {% if status %}
+            <div class="table-wrap">
+                <table>
+                    <tr>
+                        <th>學號</th>
+                        <th>姓名</th>
+                        <th>性別</th>
+                        <th>生日</th>
+                        <th>信箱</th>
+                        <th>電話</th>
+                        <th>地址</th>
+                        <th>編輯</th>
+                    </tr>
+
+                    {% for data in page_obj %}
+                        <tr>
+                            <td>{{data.cid}}</td>
+                            <td>{{data.cname}}</td>
+                            <td>{% if data.csex == "M" %}男{% else %}女{% endif %}</td>
+                            <td>{{data.cbirthday|date:'Y-m-d'}}</td>
+                            <td>{{data.cemail}}</td>
+                            <td>{{data.cphone}}</td>
+                            <td>{{data.caddr}}</td>
+                            <td>
+                                <a href="/edit/{{ data.cid }}/">編輯</a>
+                                <a href="/delete/{{ data.cid }}/">刪除</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">最前頁</a>
+                {% else %}
+                    <span>最前頁</span>
+                {% endif %}
+
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">上一頁</a>
+                {% else %}
+                    <span>上一頁</span>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <strong>{{ num }}</strong>
+                    {% else %}
+                        <a href="?page={{ num }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">下一頁</a>
+                {% else %}
+                    <span>下一頁</span>
+                {% endif %}
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.paginator.num_pages }}">最後頁</a>
+                {% else %}
+                    <span>最後頁</span>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="error-box">
+                {{errormessage}}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+
+
+{% comment %} 改成 畢卡索感的簡約幾何風，動畫也收斂成很輕的幾何漂移。
+重點會是：
+    黑、米白、灰藍、陶土紅、靛藍、芥黃
+    大色塊、線條、幾何構成
+    動畫很淡，只做背景幾何緩慢移動
+    整體乾淨、有設計感
+
+這版特點是：
+    沒有醜的漸層亂飛
+    沒有多餘節慶字
+    動畫只剩下背景幾何微動
+    整體比較像 藝術海報 / 幾何拼貼 / 簡約畢卡索感 {% endcomment %}

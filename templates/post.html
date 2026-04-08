@@ -1,0 +1,429 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>學生資料管理系統-新增資料</title>
+<style>
+    :root{
+        --black: #1f1f1b;
+        --offwhite: #f3efe6;
+        --bluegray: #8fa3b0;
+        --terracotta: #b85c38;
+        --indigo: #2f3e6b;
+        --mustard: #c9a227;
+        --line: rgba(31,31,27,0.16);
+        --shadow: rgba(31,31,27,0.08);
+    }
+
+    *{
+        box-sizing: border-box;
+    }
+
+    body{
+        margin: 0;
+        font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+        color: var(--black);
+        background: var(--offwhite);
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    /* 背景幾何色塊 */
+    body::before,
+    body::after{
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    body::before{
+        background:
+            polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+
+    body::after{
+        background:
+            linear-gradient(transparent, transparent);
+    }
+
+    .geo-bg{
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .shape{
+        position: absolute;
+        opacity: 0.16;
+        animation: drift 18s ease-in-out infinite alternate;
+    }
+
+    .shape.s1{
+        width: 280px;
+        height: 280px;
+        background: var(--terracotta);
+        top: 5%;
+        left: -60px;
+        clip-path: polygon(0 0, 100% 18%, 82% 100%, 12% 84%);
+        animation-duration: 22s;
+    }
+
+    .shape.s2{
+        width: 220px;
+        height: 220px;
+        border: 4px solid var(--indigo);
+        top: 12%;
+        right: 8%;
+        transform: rotate(18deg);
+        animation-duration: 26s;
+    }
+
+    .shape.s3{
+        width: 180px;
+        height: 180px;
+        background: var(--mustard);
+        bottom: 10%;
+        left: 10%;
+        border-radius: 50%;
+        animation-duration: 24s;
+    }
+
+    .shape.s4{
+        width: 320px;
+        height: 140px;
+        background: var(--bluegray);
+        bottom: 6%;
+        right: -40px;
+        clip-path: polygon(0 30%, 100% 0, 92% 100%, 8% 82%);
+        animation-duration: 28s;
+    }
+
+    .shape.s5{
+        width: 140px;
+        height: 140px;
+        background: transparent;
+        border-left: 6px solid var(--black);
+        border-bottom: 6px solid var(--black);
+        top: 48%;
+        left: 6%;
+        transform: rotate(-25deg);
+        opacity: 0.12;
+        animation-duration: 20s;
+    }
+
+    @keyframes drift{
+        0%{
+            transform: translate(0, 0) rotate(0deg);
+        }
+        100%{
+            transform: translate(14px, -10px) rotate(3deg);
+        }
+    }
+
+    .page{
+        position: relative;
+        z-index: 1;
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 56px 20px 72px;
+    }
+
+    .hero{
+        text-align: center;
+        margin-bottom: 36px;
+    }
+
+    .title{
+        margin: 0 0 14px;
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        color: var(--black);
+        display: inline-block;
+        padding: 10px 18px;
+        border: 3px solid var(--black);
+        background: rgba(243,239,230,0.88);
+        box-shadow: 8px 8px 0 var(--mustard);
+    }
+
+    .home-link{
+        display: inline-block;
+        text-decoration: none;
+        color: var(--indigo);
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        padding: 6px 12px;
+        border-bottom: 2px solid var(--indigo);
+        transition: 0.2s ease;
+    }
+
+    .home-link:hover{
+        color: var(--terracotta);
+        border-bottom-color: var(--terracotta);
+        transform: translateY(-1px);
+    }
+
+    .form-wrap{
+        max-width: 760px;
+        margin: 0 auto;
+        background: rgba(243,239,230,0.94);
+        border: 3px solid var(--black);
+        box-shadow: 14px 14px 0 var(--bluegray);
+        padding: 26px;
+        position: relative;
+    }
+
+    .form-wrap::before{
+        content: "";
+        position: absolute;
+        width: 90px;
+        height: 90px;
+        right: -18px;
+        top: -18px;
+        background: var(--terracotta);
+        z-index: -1;
+        opacity: 0.9;
+    }
+
+    .form-wrap::after{
+        content: "";
+        position: absolute;
+        width: 120px;
+        height: 12px;
+        left: 24px;
+        top: -8px;
+        background: var(--mustard);
+    }
+
+    table{
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        background: transparent;
+    }
+
+    th, td{
+        border: 1.5px solid var(--black);
+        padding: 14px 16px;
+        vertical-align: middle;
+    }
+
+    th{
+        width: 28%;
+        background: rgba(143,163,176,0.18);
+        text-align: center;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+    }
+
+    td{
+        background: rgba(255,255,255,0.18);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="date"]{
+        width: 100%;
+        padding: 12px 14px;
+        border: 2px solid var(--black);
+        background: #fcfaf5;
+        color: var(--black);
+        font-size: 0.98rem;
+        outline: none;
+        transition: 0.2s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="date"]:focus{
+        border-color: var(--indigo);
+        box-shadow: 4px 4px 0 rgba(47,62,107,0.14);
+    }
+
+    input[type="radio"]{
+        accent-color: var(--indigo);
+        transform: scale(1.05);
+        margin-right: 6px;
+    }
+
+    label{
+        margin-right: 18px;
+        font-weight: 600;
+    }
+
+    .actions{
+        text-align: center;
+        background: rgba(201,162,39,0.08);
+    }
+
+    input[type="submit"],
+    input[type="reset"]{
+        min-width: 110px;
+        padding: 10px 18px;
+        margin: 4px 8px;
+        border: 2px solid var(--black);
+        font-size: 0.96rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    input[type="submit"]{
+        background: var(--indigo);
+        color: var(--offwhite);
+    }
+
+    input[type="submit"]:hover{
+        background: var(--black);
+        transform: translate(-2px, -2px);
+        box-shadow: 4px 4px 0 rgba(31,31,27,0.18);
+    }
+
+    input[type="reset"]{
+        background: var(--terracotta);
+        color: var(--offwhite);
+    }
+
+    input[type="reset"]:hover{
+        transform: translate(-2px, -2px);
+        box-shadow: 4px 4px 0 rgba(31,31,27,0.18);
+    }
+
+    @media (max-width: 768px){
+        .page{
+            padding: 34px 14px 56px;
+        }
+
+        .title{
+            font-size: 1.45rem;
+            line-height: 1.5;
+        }
+
+        .form-wrap{
+            padding: 16px;
+            box-shadow: 8px 8px 0 var(--bluegray);
+        }
+
+        table, tbody, tr, th, td{
+            display: block;
+            width: 100%;
+        }
+
+        tr{
+            margin-bottom: 12px;
+        }
+
+        th{
+            border-bottom: none;
+            text-align: left;
+        }
+
+        td{
+            border-top: none;
+        }
+
+        .actions{
+            border-top: 1.5px solid var(--black);
+        }
+    }
+</style>
+{% endblock title %}
+
+{% block content %}
+<div class="geo-bg">
+    <span class="shape s1"></span>
+    <span class="shape s2"></span>
+    <span class="shape s3"></span>
+    <span class="shape s4"></span>
+    <span class="shape s5"></span>
+</div>
+
+<div class="page">
+    <div class="hero">
+        <h1 class="title">學生資料管理系統－新增資料</h1>
+        <div>
+            <a class="home-link" href="{% url 'index' %}">回首頁</a>
+        </div>
+    </div>
+
+    <div class="form-wrap">
+        <form action="{% url 'post' %}" method="post">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <th>*姓名</th>
+                    <td><input type="text" id="cname" name="cname" required placeholder="請輸入姓名"></td>
+                </tr>
+
+                <tr>
+                    <th>性別</th>
+                    <td>
+                        <input type="radio" id="csex_m" name="csex" value="M" checked>
+                        <label for="csex_m">男</label>
+
+                        <input type="radio" id="csex_f" name="csex" value="F">
+                        <label for="csex_f">女</label>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>*生日</th>
+                    <td><input type="date" id="cbirthday" name="cbirthday" required></td>
+                </tr>
+
+                <tr>
+                    <th>*信箱</th>
+                    <td><input type="email" id="cemail" name="cemail" required placeholder="請輸入信箱"></td>
+                </tr>
+
+                <tr>
+                    <th>&nbsp;&nbsp;電話</th>
+                    <td><input type="text" id="cphone" name="cphone" placeholder="請輸入電話"></td>
+                </tr>
+
+                <tr>
+                    <th>&nbsp;&nbsp;地址</th>
+                    <td><input type="text" id="caddr" name="caddr" placeholder="請輸入地址"></td>
+                </tr>
+
+                <tr>
+                    <th colspan="2" class="actions">
+                        <input type="submit" name="submitbutton" value="儲存">
+                        <input type="reset" name="resetbutton" value="重置">
+                    </th>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+
+
+{% comment %} 視覺語言大概是：
+
+米白底做畫布感
+黑線條做出海報式結構
+灰藍 / 陶土紅 / 芥黃 / 靛藍做幾何拼貼
+表單區塊本身保持乾淨，避免花過頭
+動畫只有背景 shape 緩慢漂移，不會干擾操作
+
+
+若你要，我也可以下一步直接幫你再細化成：
+
+更高級的展覽海報版
+更偏 Matisse / Picasso 拼貼版
+完全純黑白＋一個強調色版
+
+*
+Matisse：剪紙感色塊、自由但克制的有機輪廓
+Picasso：黑色線條、抽象臉部輪廓、幾何拆解感
+海報感：標題、色塊、表單像被放進拼貼作品裡
+*
+更像 Matisse：更柔和、有機、剪紙感更重
+更像 Picasso：線條更強、抽象臉更明顯
+更高級畫冊風：保留拼貼感，但更乾淨、展覽級排版
+{% endcomment %}
