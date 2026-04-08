@@ -279,3 +279,78 @@ def getItem(request, id):
     except:
         # return HttpResponse("False")
         return JsonResponse({"error":"Item not found"},status=404)
+    
+from django.views.decorators.csrf import csrf_exempt
+# @csrf_exempt 裝飾器的作用是讓這個 view 可以接受沒有 CSRF token 的請求，通常用在 API 或測試環境中。
+# 在正式生產環境中，建議還是要使用 CSRF token 來保護你的應用程式免受跨站請求偽造攻擊。
+# 停止CSRF驗證，讓外部程式也能呼叫這個API，否則外部程式無法取得CSRF token，就無法成功呼叫API。
+@csrf_exempt    
+def createItem(request):
+    # return HttpResponse("hello")
+    try:
+        if request.method == 'GET':
+            cname = request.GET['cname']
+            csex = request.GET['csex']
+            cbirthday = request.GET['cbirthday']
+            cemail = request.GET['cemail']
+            cphone = request.GET['cphone']
+            caddr = request.GET['caddr']
+            print(f"GET data: cname={cname}, csex={csex}, cbirthday={cbirthday}, cemail={cemail}, cphone={cphone}, caddr={caddr}") #檢查用，資料會印出來
+        
+            # return HttpResponse("get....")
+    
+        elif request.method == 'POST':
+            cname = request.POST.get('cname')
+            csex = request.POST.get('csex')
+            cbirthday = request.POST.get('cbirthday')
+            cemail = request.POST.get('cemail')
+            cphone = request.POST.get('cphone')
+            caddr = request.POST.get('caddr')
+            print(f"POST data: cname={cname}, csex={csex}, cbirthday={cbirthday}, cemail={cemail}, cphone={cphone}, caddr={caddr}") #檢查用，資料會印出來
+            # return HttpResponse("post....")
+        try:
+            add = students(cname=cname, csex = csex, cbirthday=cbirthday, cemail=cemail, cphone=cphone, caddr=caddr)
+            add.save()
+            return JsonResponse({"message":"Item created successfully"}, status=201)
+        except:
+            return JsonResponse({"error":"Failed to create item"}, status=500)
+    except:
+        return JsonResponse({"error":"Invalid data"}, status=400)
+    
+@csrf_exempt 
+def updateItem(request, id):
+    print(f"id={id}")
+    try:
+        if request.method == 'GET':
+            cname = request.GET['cname']
+            csex = request.GET['csex']
+            cbirthday = request.GET['cbirthday']
+            cemail = request.GET['cemail']
+            cphone = request.GET['cphone']
+            caddr = request.GET['caddr']
+            print(f"GET data: cname={cname}, csex={csex}, cbirthday={cbirthday}, cemail={cemail}, cphone={cphone}, caddr={caddr}") #檢查用，資料會印出來
+            # return HttpResponse("get....")
+        
+        elif request.method == 'POST':
+            cname = request.POST.get('cname')
+            csex = request.POST.get('csex')
+            cbirthday = request.POST.get('cbirthday')
+            cemail = request.POST.get('cemail')
+            cphone = request.POST.get('cphone')
+            caddr = request.POST.get('caddr')
+            print(f"POST data: cname={cname}, csex={csex}, cbirthday={cbirthday}, cemail={cemail}, cphone={cphone}, caddr={caddr}") #檢查用，資料會印出來
+            # return HttpResponse("post....")
+        try:
+            update = students.objects.get(cid=id)
+            update.cname=cname
+            update.csex=csex
+            update.cbirthday=cbirthday
+            update.cemail=cemail
+            update.cphone=cphone
+            update.caddr=caddr
+            update.save()
+            return JsonResponse({"message":"Item created successfully"}, status=201)
+        except:
+            return JsonResponse({"error":"Failed to create item"}, status=500)
+    except:
+         return JsonResponse({"error":"Invalid data"}, status=400)
